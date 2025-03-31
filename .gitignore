@@ -1,0 +1,49 @@
+# --- Python Virtual Environments ---
+# Ignore the virtual environment directory itself
+.venv/
+venv/
+env/
+
+# --- Python Cache & Compiled Files ---
+# Ignore bytecode and optimized files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Data & Generated Files ---
+# Ignore downloaded replay files
+replays/
+replays_old/
+
+# Ignore specific old/backup data files
+basil_ladder_games_old.csv
+
+# Ignore generated debug output
+debug_html/
+
+# --- Test Files ---
+# Ignore test files as per request (only main.py requested)
+# Often, test files *are* committed, but following the specific request here.
+test.py
+
+# --- IDE / Editor Specific ---
+# PyCharm
+.idea/
+# VSCode
+.vscode/
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+# Vim
+*.swp
+*~
+
+# --- OS Specific ---
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+
+# --- Log files ---
+*.log
