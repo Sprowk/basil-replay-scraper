@@ -14,17 +14,15 @@ __pycache__/
 # --- Data & Generated Files ---
 # Ignore downloaded replay files
 replays/
-replays_old/
 
 # Ignore specific old/backup data files
+replays_old/
 basil_ladder_games_old.csv
 
 # Ignore generated debug output
 debug_html/
 
 # --- Test Files ---
-# Ignore test files as per request (only main.py requested)
-# Often, test files *are* committed, but following the specific request here.
 test.py
 
 # --- IDE / Editor Specific ---
