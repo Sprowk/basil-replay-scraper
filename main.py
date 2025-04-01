@@ -10,9 +10,23 @@ import requests
 from datetime import datetime
 import json
 import logging
+import sys
 
 
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+LOG_FILE = "daily_scrape.log"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+log_file = os.path.join(SCRIPT_DIR, LOG_FILE)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.StreamHandler(),  # Console output
+        logging.FileHandler(log_file, mode='a', encoding='utf-8')  # Daily log file
+    ],
+    force=True
+)
 
 CSV_FILENAME = "basil_ladder_games.csv"
 REPLAY_FOLDER = "replays"
@@ -454,8 +468,10 @@ def show_statistics(games_df):
 
 def main():
     print("=== BASIL Ladder Games Scraper and Replay Downloader ===")
+    logging.info("Starting scraper.\n")
 
     games_df = load_existing_games()
+    sys.stdout.flush()
 
     while True:
         print("\nWhat would you like to do?")
