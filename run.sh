@@ -18,11 +18,14 @@ echo "------------------------------------"
 
 # 1. Validate paths
 if [ ! -d "$SCRAPER_DIR" ]; then
-  echo "ERROR: Scraper directory not found: $SCRAPER_DIR" >&2; exit 1; fi
+  echo "ERROR: Scraper directory not found: $SCRAPER_DIR" >&2;
+  exit 1; fi
 if [ ! -f "$SCRAPER_DIR/$PYTHON_SCRIPT_NAME" ]; then
-  echo "ERROR: Python script not found: $SCRAPER_DIR/$PYTHON_SCRIPT_NAME" >&2; exit 1; fi
+  echo "ERROR: Python script not found: $SCRAPER_DIR/$PYTHON_SCRIPT_NAME" >&2;
+  exit 1; fi
 if [ ! -f "$VENV_ACTIVATE_SCRIPT" ]; then
-  echo "ERROR: Virtual environment activate script not found: $VENV_ACTIVATE_SCRIPT" >&2
+  echo "ERROR: Virtual environment activate script not found: $VENV_ACTIVATE_SCRIPT" >&2;
+  exit; fi
 
 # 2. Activate the virtual environment
 echo "Activating virtual environment..."
