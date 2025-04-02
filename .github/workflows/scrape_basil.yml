@@ -3,7 +3,7 @@ name: Daily BASIL Scrape and Commit
 on:
   # Schedule the workflow to run automatically
   schedule:
-    - cron: '0 8,20 * * *'
+    - cron: '0 8,20 * * *' # Runs at 08:00 and 20:00 UTC daily
 
   # Allow manual triggering from the Actions tab in GitHub
   workflow_dispatch:
@@ -34,17 +34,17 @@ jobs:
       - name: Run Scraper Task
         run: python -c "import main; main.run_automated_task(download=False)"
         env:
-          PYTHONUNBUFFERED: 1
+          PYTHONUNBUFFERED: 1 # For seeing logs in real-time
+
+      - name: Get current date and time
+        id: date # Give the step an ID to reference its outputs
+        run: echo "DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
 
       - name: Commit updated data files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Automated update: Scrape results for ${{ env.DATE }}"
-          file_pattern: "basil_ladder_games.csv daily_scrape.log"
+          # Directly use the output from the 'date' step
+          commit_message: "Automated update: Scrape results for ${{ steps.date.outputs.DATE }}"
+          file_pattern: "basil_ladder_games.csv daily_scrape.log" # Ensure these files actually change
           commit_user_name: GitHub Actions Bot
           commit_user_email: actions@github.com
-        env:
-          DATE: ${{ steps.date.outputs.date }}
-
-      - id: date
-        run: echo "::set-output name=date::$(date '+%Y-%m-%d %H:%M:%S')"
