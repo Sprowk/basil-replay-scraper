@@ -5,7 +5,7 @@ on:
   schedule:
     # Runs daily at 03:30 UTC (adjust cron syntax as needed)
     # See: https://crontab.guru/
-    - cron: '45 16 * * *'
+    - cron: '45 13-18 * * *'
 
   # Allow manual triggering from the Actions tab in GitHub
   workflow_dispatch:
