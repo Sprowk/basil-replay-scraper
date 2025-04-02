@@ -40,7 +40,7 @@ jobs:
       - name: Run Scraper Task
         # Directly execute the Python function intended for automation
         # Assumes your main script is 'main.py'
-        run: python -c "import main; main.run_automated_task(download=True)"
+        run: python -c "import main; main.run_automated_task(download=False)"
         env:
            # Ensures Python output is shown in Actions logs immediately
            PYTHONUNBUFFERED: 1
