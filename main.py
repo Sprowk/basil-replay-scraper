@@ -252,7 +252,7 @@ def update_games_database(new_games, existing_df):
     for _, row in new_df.iterrows():
         # see if any row in existing matches these 6 fields exactly
         duplicate = existing_df[
-            (existing_df['game_length'] == row['game_length']) &
+            (existing_df['game_length'].fillna('') == str(row['game_length'])) &
             (existing_df['bot1_name'] == row['bot1_name']) &
             (existing_df['bot2_name'] == row['bot2_name']) &
             (existing_df['bot1_result'] == row['bot1_result']) &
