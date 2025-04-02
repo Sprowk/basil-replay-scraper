@@ -3,44 +3,41 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 Repository: [https://github.com/Sprowk/basil-replay-scraper](https://github.com/Sprowk/basil-replay-scraper)
 
-A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder, collecting game data, and downloading .rep replay files. Uses Selenium to navigate the site, stores results in a CSV database, and includes features for managing replays and ensuring data integrity.
+A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder, collecting game data, and optionally downloading .rep replay files. Uses Selenium to navigate the site, stores results in a CSV database, and includes features for managing replays and ensuring data integrity. **Automation is primarily handled via GitHub Actions.**
 
 ## Features
 
 *   **Web Scraping:** Uses Selenium (headless Chrome) to fetch game data from the BASIL Ladder "Last 24h" view.
-*   **Data Extraction:** Collects details like participating bots, ranks, results, map, game length, timestamp, and replay download links.
+*   **Data Extraction:** Collects details like participating bots, ranks, results, map, game length, timestamp, bot races, and replay download links.
 *   **Persistent Storage:** Saves scraped game data incrementally into a CSV file (`basil_ladder_games.csv`).
 *   **Unique Game IDs:** Assigns a unique, sequential `game_id` to each newly recorded game.
-*   **Duplicate Prevention:** Checks for existing games based on key fields (`timestamp`, bots, results, map) before adding new ones.
-*   **Replay Management:**
-    *   Downloads available `.rep` replay files into a designated folder (`replays/`).
+*   **Duplicate Prevention:** Checks for existing games based on key fields (bots, results, map, timestamp, etc.) before adding new ones. Skips games with missing `game_length`.
+*   **Replay Management (Optional):**
+    *   Can download available `.rep` replay files into a designated folder (`replays/`).
     *   Names replays using their unique `game_id` (e.g., `123.rep`).
     *   Tracks download status (`downloaded` flag) in the CSV.
     *   Can synchronize the `downloaded` status based on files present in the `replays/` folder.
 *   **Logging:** Records actions, warnings, and errors to both the console and a log file (`daily_scrape.log`).
-*   **Modes of Operation:**
-    *   **Automated Task:** `run_automated_task()` function designed for scheduled execution (e.g., via cron).
-    *   **Interactive Menu:** `main()` function provides a command-line interface for viewing stats, triggering updates, and downloading replays manually.
+*   **Automated Execution:** Designed to run automatically via GitHub Actions, committing updated data back to the repository.
+*   **Interactive Mode:** `main()` function provides an optional command-line interface for viewing stats, triggering updates, and downloading replays manually.
 
 ## Requirements
 
 *   Python (3.9 or higher recommended)
 *   pip (Python package installer)
-*   Google Chrome browser installed
-*   ChromeDriver executable:
-    *   Must be compatible with your installed Google Chrome version. See [ChromeDriver Downloads](https://chromedriver.chromium.org/downloads) or use a webdriver manager library.
-    *   Needs to be accessible via your system's PATH environment variable OR have its path specified within the script (currently assumes PATH).
+*   Git (for cloning and version control)
 *   Required Python packages (see `requirements.txt`)
+*   **(For Local Interactive Use Only):** Google Chrome browser and compatible ChromeDriver.
 
-## Setup & Installation
+## Setup & Installation (for Local Use/Development)
 
 1.  **Clone the Repository:**
     ```bash
     git clone https://github.com/Sprowk/basil-replay-scraper
-    cd BasicScraper
+    cd basil-replay-scraper # Make sure you navigate into the correct directory
     ```
 
-2.  **Create a Virtual Environment:** (Highly Recommended) This isolates project dependencies.
+2.  **Create a Virtual Environment:** (Highly Recommended)
     ```bash
     python3 -m venv venv # Or python -m venv venv
     ```
@@ -49,61 +46,52 @@ A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder,
     *   **macOS/Linux:** `source venv/bin/activate`
     *   **Windows:** `venv\Scripts\activate`
 
-4.  **Install Dependencies:** Ensure you have a `requirements.txt` file in the project root with the following content:
+4.  **Install Dependencies:** Ensure you have a `requirements.txt` file in the project root:
     ```txt
     # requirements.txt
     selenium>=4.0
     pandas>=1.3
     requests>=2.25
+    # Add any other direct dependencies your script uses
     ```
     Then install the packages:
     ```bash
     pip install -r requirements.txt
     ```
 
-5.  **Install/Verify ChromeDriver:** Ensure you have a compatible ChromeDriver version installed and accessible in your system's PATH. Check compatibility with your Chrome version (`chrome://version`). You might need to update it:
-    *   **Homebrew (macOS):** `brew update && brew upgrade chromedriver`
-    *   **Manual:** Download the correct version and place the executable in a directory listed in your PATH (like `/usr/local/bin` or similar).
+5.  **(Local Use Only) Install/Verify ChromeDriver:** If running interactively, ensure you have a compatible ChromeDriver. For GitHub Actions automation, this is handled by the workflow.
 
-## Interactive Mode
+## Interactive Mode (Local Only)
 
-1.  Activate your virtual environment (`source venv/bin/activate`).
-2.  Make sure you are in the `BasicScraper` directory.
-3.  Run: `python main.py`
-4.  Follow the on-screen menu prompts (e.g., show stats, run full update, download pending).
+1.  Follow the Setup & Installation steps above.
+2.  Activate your virtual environment (`source venv/bin/activate`).
+3.  Make sure you are in the `basil-replay-scraper` directory.
+4.  Run: `python main.py`
+5.  Follow the on-screen menu prompts (e.g., show stats, run full update, download pending).
 
-## Automation Setup
+## Automation via GitHub Actions (Recommended)
 
-To run the scraper automatically (e.g., once a day), use a scheduler like `cron` (macOS/Linux) or Task Scheduler (Windows). The recommended way is to use the `run.sh` script.
+This project is configured to run automatically using GitHub Actions. The workflow performs the scraping and commits the updated `basil_ladder_games.csv` and `daily_scrape.log` files back to the repository.
 
-**Using `run.sh` (Recommended for macOS/Linux):**
+**How it Works:**
 
-1.  **Configure `run.sh`:** Open the `run.sh` file provided in the project. Ensure the following variables are set correctly:
-    *   `SCRAPER_DIR`: Set this to the **absolute path** of your project directory (e.g., `/home/user/projects/basil-replay-scraper`).
-    *   `PYTHON_SCRIPT_NAME`: The name of your main Python script (default: `main.py`). Change only if you renamed it.
-    *   `PYTHON_CMD`: The command used to invoke Python when your virtual environment is active (e.g., `python3`, `python`).
-    *   `VENV_ACTIVATE_SCRIPT`: The **absolute path** to the `activate` script within your virtual environment. Double-check if your virtual environment folder is named `.venv` (default in the script) or `venv`.
-*   Save the changes made to `run.sh`.
+1.  **Workflow File:** The automation logic is defined in `.github/workflows/scrape.yml`.
+2.  **Triggers:** The workflow is triggered:
+    *   **On a Schedule:** Uses `cron` syntax (e.g., twice daily). See the `schedule` section in the workflow file.
+    *   **Manually:** Can be triggered from the "Actions" tab in your GitHub repository (`workflow_dispatch`).
+3.  **Execution:** The workflow runs on a GitHub-hosted runner (Ubuntu):
+    *   Checks out the repository code.
+    *   Sets up the specified Python version.
+    *   Installs dependencies from `requirements.txt`.
+    *   Sets up Chrome and ChromeDriver (required by Selenium).
+    *   Executes the scraper's automated task function (`main.run_automated_task(download=False)`).
+    *   If changes are detected in the specified data/log files, it automatically commits and pushes them back to the repository using a bot identity.
 
-2.  **Make `run.sh` Executable:**
-    ```bash
-    chmod +x /path/to/your/project/run.sh
-    ```
-    *(Replace `/path/to/your/project/run.sh` with the actual absolute path to the script).*
+**Setup:**
 
-3.  **Schedule with `cron`:**
-    *   Open your crontab for editing: `crontab -e`
-    *   Add a line to schedule the script. To run daily at 3:30 AM:
-        ```cron
-        # Example: Run daily at 3:30 AM
-        # m h  dom mon dow   command
-        30 3 * * * /path/to/your/project/run.sh >> /path/to/your/project/cron_job.log 2>&1
-        ```
-    *   **Explanation:**
-        *   `30 3 * * *`: Specifies the schedule (minute 30, hour 3, every day, month, day of week).
-        *   `/path/to/your/project/run.sh`: The **absolute path** to the script to execute.
-        *   `>> .../cron_run.log`: Appends standard output from `run.sh` to a log file.
-        *   `2>&1`: Redirects standard error to the same place as standard output. This helps capture errors from the shell script itself.
+1.  **Ensure the Workflow File Exists:** Make sure the `.github/workflows/scrape.yml` file is present in your repository with the correct configuration (see example below).
+2.  **Commit and Push:** Commit the `.github/workflows/scrape.yml` file to your repository's main branch.
+3.  **Enable Actions (if needed):** Ensure GitHub Actions are enabled for your repository (usually they are by default).
 
 ## Configuration
 
