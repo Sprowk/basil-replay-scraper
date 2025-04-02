@@ -22,7 +22,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
-        logging.StreamHandler(),  # Console output
+        logging.StreamHandler(stream=sys.stdout),  # Console output
         logging.FileHandler(log_file, mode='a', encoding='utf-8')  # Daily log file
     ],
     force=True
@@ -154,7 +154,7 @@ def extract_basil_ladder_games(bot_ratings_dict):
             # Log progress more meaningfully
             if processed_count % 20 == 0 or processed_count == total_games_in_table:
                 percent = (processed_count / total_games_in_table) * 100
-                logging.info(f"Processing game {processed_count}/{total_games_in_table} ({percent:.1f}%)")
+                print(f"Processing game {processed_count}/{total_games_in_table} ({percent:.1f}%)")
 
             try:
                 bot1 = cells[0].text.split(maxsplit=1)
@@ -346,7 +346,7 @@ def download_replays(games_df):
 
         if i % 10 == 0 or i == total_pending:
             overall_percent = (i / total_pending) * 100
-            logging.info(f"Downloaded {i}/{total_pending} replays ({overall_percent:.1f}% complete)")
+            print(f"Downloaded {i}/{total_pending} replays ({overall_percent:.1f}% complete)")
 
     logging.info(f"Replay Download Summary:")
     logging.info(f"  Successfully Downloaded: {downloaded_count}")
@@ -466,11 +466,76 @@ def show_statistics(games_df):
     print("=" * 27)
 
 
+def sync_replay_status(games_df, replay_folder_path=REPLAY_FOLDER):
+    logging.info(f"Synchronizing 'downloaded' status with folder: {replay_folder_path}")
+
+    # Column 'game_id' is required
+    if 'game_id' not in games_df.columns:
+        logging.error("Cannot sync replay status: 'game_id' column missing.")
+        return games_df # Cannot proceed
+
+    # Ensure 'downloaded' column exists
+    if 'downloaded' not in games_df.columns:
+        logging.warning("Initializing 'downloaded' column type to False.")
+        games_df['downloaded'] = False
+
+    # Scan the replay folder for .rep files
+    found_replay_filenames = set()
+    if os.path.exists(replay_folder_path):
+        try:
+            found_replay_filenames = {f for f in os.listdir(replay_folder_path) if f.lower().endswith(".rep")}
+            logging.info(f"Found {len(found_replay_filenames)} potential .rep files in {replay_folder_path}.")
+        except OSError as e:
+            logging.error(f"Error scanning replay directory {replay_folder_path}: {e}")
+    else:
+        logging.warning(f"Replay directory not found: {replay_folder_path}")
+
+    # Check if the replay file for a given game ID exists
+    def check_exists(game_id):
+        try:
+            if pd.isna(game_id):
+                return False
+            return f"{int(game_id)}.rep" in found_replay_filenames
+        except (ValueError, TypeError):
+             return False # Treat invalid IDs as False
+
+    # Calculate the new statuses based on folder scan
+    logging.info("Calculating new 'downloaded' statuses based on folder scan...")
+    new_downloaded_status = games_df['game_id'].apply(check_exists)
+
+    # Store the state before modification for comparison later
+    old_downloaded_status = games_df['downloaded'].copy()
+
+    # Calculate the changes by comparing old and new
+    statuses_changed_to_true = ((new_downloaded_status == True) & (old_downloaded_status == False)).sum()
+    statuses_changed_to_false = ((new_downloaded_status == False) & (old_downloaded_status == True)).sum()
+
+    #  Apply the new changes to the DataFrame
+    games_df['downloaded'] = new_downloaded_status
+
+    logging.info(f"Synchronization complete. 'downloaded' status updated.")
+    logging.info(f"  Status changed to True: {statuses_changed_to_true}")
+    logging.info(f"  Status changed to False: {statuses_changed_to_false}")
+    logging.info(f"  Total marked as downloaded: {old_downloaded_status.sum()} -> {games_df['downloaded'].sum()}")
+
+    # Save updated CSV with download statuses
+    try:
+        required_cols = create_empty_dataframe().columns.tolist()
+        games_df[required_cols].to_csv(CSV_FILENAME, index=False)
+        logging.info(f"Updated download statuses saved to {CSV_FILENAME}")
+    except Exception as e:
+         logging.error(f"Failed to save updated CSV after downloads: {e}")
+
+    return games_df
+
+
 def main():
     print("=== BASIL Ladder Games Scraper and Replay Downloader ===")
     logging.info("Starting scraper.\n")
 
     games_df = load_existing_games()
+    games_df = sync_replay_status(games_df, REPLAY_FOLDER)
+
     sys.stdout.flush()
 
     while True:
