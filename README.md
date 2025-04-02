@@ -8,7 +8,7 @@ A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder,
 ## Features
 
 *   **Web Scraping:** Uses Selenium (headless Chrome) to fetch game data from the BASIL Ladder "Last 24h" view.
-*   **Data Extraction:** Collects details like participating bots, ranks, results, map, game length, timestamp, bot races, and replay download links.
+*   **Data Extraction:** Collects details like participating bots, ranks, results, map, game length, timestamp, bot races and replay download links.
 *   **Persistent Storage:** Saves scraped game data incrementally into a CSV file (`basil_ladder_games.csv`).
 *   **Unique Game IDs:** Assigns a unique, sequential `game_id` to each newly recorded game.
 *   **Duplicate Prevention:** Checks for existing games based on key fields (bots, results, map, timestamp, etc.) before adding new ones. Skips games with missing `game_length`.
@@ -17,7 +17,7 @@ A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder,
     *   Names replays using their unique `game_id` (e.g., `123.rep`).
     *   Tracks download status (`downloaded` flag) in the CSV.
     *   Can synchronize the `downloaded` status based on files present in the `replays/` folder.
-*   **Logging:** Records actions, warnings, and errors to both the console and a log file (`daily_scrape.log`).
+*   **Logging:** Records actions, warnings and errors to both the console and a log file (`daily_scrape.log`).
 *   **Automated Execution:** Designed to run automatically via GitHub Actions, committing updated data back to the repository.
 *   **Interactive Mode:** `main()` function provides an optional command-line interface for viewing stats, triggering updates, and downloading replays manually.
 
@@ -27,14 +27,14 @@ A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder,
 *   pip (Python package installer)
 *   Git (for cloning and version control)
 *   Required Python packages (see `requirements.txt`)
-*   **(For Local Interactive Use Only):** Google Chrome browser and compatible ChromeDriver.
+*   Google Chrome browser and compatible ChromeDriver.
 
 ## Setup & Installation (for Local Use/Development)
 
 1.  **Clone the Repository:**
     ```bash
     git clone https://github.com/Sprowk/basil-replay-scraper
-    cd basil-replay-scraper # Make sure you navigate into the correct directory
+    cd basil-replay-scraper
     ```
 
 2.  **Create a Virtual Environment:** (Highly Recommended)
@@ -49,10 +49,11 @@ A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder,
 4.  **Install Dependencies:** Ensure you have a `requirements.txt` file in the project root:
     ```txt
     # requirements.txt
-    selenium>=4.0
-    pandas>=1.3
-    requests>=2.25
-    # Add any other direct dependencies your script uses
+    requests
+    selenium
+    pandas
+    webdriver-manager
+    scbw
     ```
     Then install the packages:
     ```bash
@@ -62,7 +63,7 @@ A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder,
 5.  **(Local Use Only) Install/Verify ChromeDriver:** If running interactively, ensure you have a compatible ChromeDriver. For GitHub Actions automation, this is handled by the workflow.
 
 ## Interactive Mode (Local Only)
-While the primary automation runs via GitHub Actions (without downloading replays), you can run the scraper locally for testing, manual updates, or specifically **to download the replay files**.
+While the primary automation runs via GitHub Actions (without downloading replays), you can run the scraper locally for testing, manual updates or specifically **to download the replay files**.
 
 1.  Follow the Setup & Installation steps above.
 2.  Activate your virtual environment (`source venv/bin/activate`).
@@ -114,7 +115,6 @@ basil-replay-scraper/
 ├── replays/                # Holds downloaded .rep files (named <game_id>.rep)
 │   └── ...                   # (Contains .rep files like 1.rep, 2.rep etc.)
 ├── main.py                 # Core scraping logic & optional interactive menu
-├── run.sh                  # Shell script for automated runs (macOS/Linux)
 ├── basil_ladder_games.csv  # CSV database (created automatically if missing)
 ├── daily_scrape.log        # Log file (created automatically on first run)
 ├── requirements.txt        # Python dependencies
