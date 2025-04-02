@@ -126,15 +126,16 @@ def extract_basil_ladder_games(bot_ratings_dict):
 
         # Get rows
         game_rows = games_table.find_elements(By.TAG_NAME, "tr")
-        logging.info(f"Found {len(game_rows)} game rows in the table")
-
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Skip first row
         start_idx = 2
         total_games_in_table = max(0, len(game_rows) - start_idx)
+
         if total_games_in_table == 0:
              logging.warning("No game data rows found after skipping headers.")
+        else:
+            logging.info(f"Found {total_games_in_table} games in the table")
 
         processed_count = 0
         for row_idx, row in enumerate(game_rows[start_idx:], start=1):
@@ -527,6 +528,54 @@ def sync_replay_status(games_df, replay_folder_path=REPLAY_FOLDER):
          logging.error(f"Failed to save updated CSV after downloads: {e}")
 
     return games_df
+
+
+def run_automated_task(download=False):
+    start_time = time.time()
+    logging.info("=" * 30)
+    logging.info("Starting Automated Scrape Task")
+    logging.info(f"Download replays: {'Enabled' if download else 'Disabled'}")
+    logging.info("=" * 30)
+    success = False  # Flag to track outcome
+
+    try:
+        logging.info("Step 1: Loading existing game data...")
+        games_df = load_existing_games()
+
+        if download:
+            logging.info("Step 2: Syncing replay status with folder...")
+            games_df = sync_replay_status(games_df, REPLAY_FOLDER)
+        else:
+            logging.info("Step 2: Skipping syncing replay status.")
+
+        logging.info("Step 3: Fetching bot ratings...")
+        bot_ratings = get_all_bot_ratings()
+
+        logging.info("Step 4: Extracting new games from BASIL ladder...")
+        new_games = extract_basil_ladder_games(bot_ratings)
+
+        logging.info("Step 5: Updating games database with new games...")
+        games_df = update_games_database(new_games, games_df)
+
+        if download:
+            logging.info("Step 6: Downloading new replays...")
+            games_df = download_replays(games_df)
+        else:
+            logging.info("Step 6: Skipping replay download.")
+
+        success = True
+
+    except Exception as e:
+        logging.exception("!!! An critical error occurred during the daily scrape job, halting execution !!!")
+
+    finally:
+        end_time = time.time()
+        duration = end_time - start_time
+        logging.info("="*30)
+        logging.info(f"Automated Scrape Task Finished")
+        logging.info(f"Outcome: {'SUCCESS' if success else 'FAILURE'}")
+        logging.info(f"Total Duration: {duration:.2f} seconds")
+        logging.info("="*30)
 
 
 def main():
