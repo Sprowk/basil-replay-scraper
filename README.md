@@ -62,6 +62,7 @@ A Python tool for scraping the latest StarCraft bot games from the BASIL Ladder,
 5.  **(Local Use Only) Install/Verify ChromeDriver:** If running interactively, ensure you have a compatible ChromeDriver. For GitHub Actions automation, this is handled by the workflow.
 
 ## Interactive Mode (Local Only)
+While the primary automation runs via GitHub Actions (without downloading replays), you can run the scraper locally for testing, manual updates, or specifically **to download the replay files**.
 
 1.  Follow the Setup & Installation steps above.
 2.  Activate your virtual environment (`source venv/bin/activate`).
@@ -75,7 +76,7 @@ This project is configured to run automatically using GitHub Actions. The workfl
 
 **How it Works:**
 
-1.  **Workflow File:** The automation logic is defined in `.github/workflows/scrape.yml`.
+1.  **Workflow File:** The automation logic is defined in `.github/workflows/scrape_basil.yml`.
 2.  **Triggers:** The workflow is triggered:
     *   **On a Schedule:** Uses `cron` syntax (e.g., twice daily). See the `schedule` section in the workflow file.
     *   **Manually:** Can be triggered from the "Actions" tab in your GitHub repository (`workflow_dispatch`).
@@ -89,8 +90,8 @@ This project is configured to run automatically using GitHub Actions. The workfl
 
 **Setup:**
 
-1.  **Ensure the Workflow File Exists:** Make sure the `.github/workflows/scrape.yml` file is present in your repository with the correct configuration (see example below).
-2.  **Commit and Push:** Commit the `.github/workflows/scrape.yml` file to your repository's main branch.
+1.  **Ensure the Workflow File Exists:** Make sure the `.github/workflows/scrape_basil.yml` file is present in your repository with the correct configuration (see example below).
+2.  **Commit and Push:** Commit the `.github/workflows/scrape_basil.yml` file to your repository's main branch.
 3.  **Enable Actions (if needed):** Ensure GitHub Actions are enabled for your repository (usually they are by default).
 
 ## Configuration
