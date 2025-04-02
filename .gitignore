@@ -44,4 +44,7 @@ test.py
 Thumbs.db
 
 # --- Log files ---
+# Ignore most log files...
 *.log
+# ...BUT DO track the specific daily scrape log.
+!daily_scrape.log
