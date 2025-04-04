@@ -423,6 +423,35 @@ def show_statistics(games_df):
     else:
         logging.info("No valid race data available.")
 
+    print("\n--- Race Matchup Counts ---")
+    if 'bot1_race' in games_df.columns and 'bot2_race' in games_df.columns:
+        matchup_counts = {}
+        invalid_matchup_count = 0
+        valid_races_set = {'terran', 'protoss', 'zerg'} #, 'terran_random','protoss_random','zerg_random'}
+
+        for _, row in games_df.iterrows():
+            r1 = str(row.get('bot1_race', '')).lower()
+            r2 = str(row.get('bot2_race', '')).lower()
+
+            if r1 in valid_races_set and r2 in valid_races_set:
+                matchup_key = tuple(sorted((r1, r2)))
+                matchup_counts[matchup_key] = matchup_counts.get(matchup_key, 0) + 1
+            else:
+                invalid_matchup_count += 1
+
+        if matchup_counts:
+            sorted_matchups = sorted(matchup_counts.items(), key=lambda item: (-item[1], item[0]))
+            for (race1, race2), count in sorted_matchups:
+                print(f"  {race1.capitalize()} vs {race2.capitalize()}: {count} games")
+        else:
+            logging.info("No valid race matchup data available.")
+
+        if invalid_matchup_count > 0:
+            print(f"  Games with Invalid/Unknown Race(s): {invalid_matchup_count}")
+
+    else:
+        logging.info("Skipping Race Matchup Counts (missing 'bot1_race' or 'bot2_race' column).")
+
     print("\n--- Bot Ratings  ---")
     try:
         bot1_ratings_num = pd.to_numeric(games_df['bot1_rating'], errors='coerce')
