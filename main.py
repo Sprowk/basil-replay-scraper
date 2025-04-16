@@ -365,6 +365,29 @@ def download_replays(games_df):
     return games_df
 
 
+def _parse_game_length(game_length):
+    game_length = str(game_length).strip().lower()
+    if not game_length:
+        return 0
+
+    total = 0
+    # break the string on whitespace: ['8m', '16s']
+    for chunk in game_length.split():
+        if not chunk[:-1].isdigit():
+            continue
+        value = int(chunk[:-1])
+        unit  = chunk[-1]
+
+        if unit == 'h':
+            total += value * 3600
+        elif unit == 'm':
+            total += value * 60
+        elif unit == 's':
+            total += value
+
+    return total
+
+
 def show_statistics(games_df):
     print("\n=== Database Statistics ===")
 
@@ -447,7 +470,7 @@ def show_statistics(games_df):
             logging.info("No valid race matchup data available.")
 
         if invalid_matchup_count > 0:
-            print(f"  Games with Invalid/Unknown Race(s): {invalid_matchup_count}")
+            print(f"  Games with Random / Unknown Race(s): {invalid_matchup_count}")
 
     else:
         logging.info("Skipping Race Matchup Counts (missing 'bot1_race' or 'bot2_race' column).")
@@ -478,6 +501,22 @@ def show_statistics(games_df):
 
     except Exception as e:
         logging.error(f"Failed processing ratings: {e}")
+
+    try:
+        total_seconds = games_df['game_length'].apply(_parse_game_length).sum()
+        if total_seconds > 0:
+            hours, rem = divmod(total_seconds, 3600)
+            minutes, seconds = divmod(rem, 60)
+            avg_seconds = total_seconds / total_games
+            avg_min, avg_sec = divmod(int(avg_seconds), 60)
+
+            print("\n--- Total Game Time ---")
+            print(f"  Combined play‑time: {hours}h {minutes}m {seconds}s")
+            print(f"  Average per game : {avg_min}m {avg_sec}s")
+        else:
+            logging.info("No valid game‑length data to summarise.")
+    except Exception as e:
+        logging.error(f"Failed calculating total game time: {e}")
 
     print("\n--- Game Timeframe ---")
     try:
