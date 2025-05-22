@@ -3397,3 +3397,78 @@
 2025-05-22 08:14:38 - INFO - Outcome: SUCCESS
 2025-05-22 08:14:38 - INFO - Total Duration: 105.44 seconds
 2025-05-22 08:14:38 - INFO - ==============================
+2025-05-22 20:10:22 - INFO - ==============================
+2025-05-22 20:10:22 - INFO - Starting Automated Scrape Task
+2025-05-22 20:10:22 - INFO - Download replays: Disabled
+2025-05-22 20:10:22 - INFO - ==============================
+2025-05-22 20:10:22 - INFO - Step 1: Loading existing game data...
+2025-05-22 20:10:22 - INFO - Loading existing games data from basil_ladder_games.csv
+2025-05-22 20:10:22 - INFO - Loaded 61294 games from existing database.
+2025-05-22 20:10:22 - INFO - Step 2: Skipping syncing replay status.
+2025-05-22 20:10:22 - INFO - Step 3: Fetching bot ratings...
+2025-05-22 20:10:22 - INFO - Fetching master rating list from https://data.basil-ladder.net/stats/ranking.json...
+2025-05-22 20:10:23 - INFO - Successfully loaded ratings for 290 bots from JSON.
+2025-05-22 20:10:23 - INFO - Step 4: Extracting new games from BASIL ladder...
+2025-05-22 20:10:23 - INFO - Fetching latest games from BASIL Ladder (Last 24h)...
+2025-05-22 20:10:24 - INFO - Navigating to https://basil.bytekeeper.org/...
+2025-05-22 20:10:24 - INFO - Waiting for page to load...
+2025-05-22 20:10:35 - ERROR - An error occurred during Selenium extraction: Message: 
+Stacktrace:
+#0 0x56237e68e78a <unknown>
+#1 0x56237e1310a0 <unknown>
+#2 0x56237e1829b0 <unknown>
+#3 0x56237e182ba1 <unknown>
+#4 0x56237e1d0ea4 <unknown>
+#5 0x56237e1a83cd <unknown>
+#6 0x56237e1ce2a0 <unknown>
+#7 0x56237e1a8173 <unknown>
+#8 0x56237e174d4b <unknown>
+#9 0x56237e1759b1 <unknown>
+#10 0x56237e65393b <unknown>
+#11 0x56237e65783a <unknown>
+#12 0x56237e63b692 <unknown>
+#13 0x56237e6583c4 <unknown>
+#14 0x56237e6204cf <unknown>
+#15 0x56237e67c568 <unknown>
+#16 0x56237e67c746 <unknown>
+#17 0x56237e68d5f6 <unknown>
+#18 0x7fb2d769caa4 <unknown>
+#19 0x7fb2d7729c3c <unknown>
+Traceback (most recent call last):
+  File "/home/runner/work/basil-replay-scraper/basil-replay-scraper/main.py", line 117, in extract_basil_ladder_games
+    last_24h_button = wait.until(
+  File "/opt/hostedtoolcache/Python/3.10.17/x64/lib/python3.10/site-packages/selenium/webdriver/support/wait.py", line 146, in until
+    raise TimeoutException(message, screen, stacktrace)
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0x56237e68e78a <unknown>
+#1 0x56237e1310a0 <unknown>
+#2 0x56237e1829b0 <unknown>
+#3 0x56237e182ba1 <unknown>
+#4 0x56237e1d0ea4 <unknown>
+#5 0x56237e1a83cd <unknown>
+#6 0x56237e1ce2a0 <unknown>
+#7 0x56237e1a8173 <unknown>
+#8 0x56237e174d4b <unknown>
+#9 0x56237e1759b1 <unknown>
+#10 0x56237e65393b <unknown>
+#11 0x56237e65783a <unknown>
+#12 0x56237e63b692 <unknown>
+#13 0x56237e6583c4 <unknown>
+#14 0x56237e6204cf <unknown>
+#15 0x56237e67c568 <unknown>
+#16 0x56237e67c746 <unknown>
+#17 0x56237e68d5f6 <unknown>
+#18 0x7fb2d769caa4 <unknown>
+#19 0x7fb2d7729c3c <unknown>
+
+2025-05-22 20:10:35 - INFO - Browser closed.
+2025-05-22 20:10:35 - INFO - Extracted data for 0 games from the page.
+2025-05-22 20:10:35 - INFO - Step 5: Updating games database with new games...
+2025-05-22 20:10:35 - INFO - No new games scraped to update database.
+2025-05-22 20:10:35 - INFO - Step 6: Skipping replay download.
+2025-05-22 20:10:35 - INFO - ==============================
+2025-05-22 20:10:35 - INFO - Automated Scrape Task Finished
+2025-05-22 20:10:35 - INFO - Outcome: SUCCESS
+2025-05-22 20:10:35 - INFO - Total Duration: 12.47 seconds
+2025-05-22 20:10:35 - INFO - ==============================
