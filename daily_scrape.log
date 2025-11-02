@@ -14257,3 +14257,36 @@ Stacktrace:
 2025-11-02 08:13:20 - INFO - Outcome: SUCCESS
 2025-11-02 08:13:20 - INFO - Total Duration: 162.19 seconds
 2025-11-02 08:13:20 - INFO - ==============================
+2025-11-02 20:09:00 - INFO - ==============================
+2025-11-02 20:09:00 - INFO - Starting Automated Scrape Task
+2025-11-02 20:09:00 - INFO - Download replays: Disabled
+2025-11-02 20:09:00 - INFO - ==============================
+2025-11-02 20:09:00 - INFO - Step 1: Loading existing game data...
+2025-11-02 20:09:00 - INFO - Loading existing games data from basil_ladder_games.csv
+2025-11-02 20:09:01 - INFO - Loaded 242415 games from existing database.
+2025-11-02 20:09:01 - INFO - Step 2: Skipping syncing replay status.
+2025-11-02 20:09:01 - INFO - Step 3: Fetching bot ratings...
+2025-11-02 20:09:01 - INFO - Fetching master rating list from https://data.basil-ladder.net/stats/ranking.json...
+2025-11-02 20:09:02 - INFO - Successfully loaded ratings for 292 bots from JSON.
+2025-11-02 20:09:02 - INFO - Step 4: Extracting new games from BASIL ladder...
+2025-11-02 20:09:02 - INFO - Fetching latest games from BASIL Ladder (Last 24h)...
+2025-11-02 20:09:02 - INFO - Navigating to https://basil.bytekeeper.org/...
+2025-11-02 20:09:03 - INFO - Waiting for page to load...
+2025-11-02 20:09:03 - INFO - Clicking 'Last 24h' button...
+2025-11-02 20:09:06 - INFO - Found 1181 games in the table
+2025-11-02 20:10:10 - INFO - Browser closed.
+2025-11-02 20:10:10 - INFO - Extracted data for 1181 games from the page.
+2025-11-02 20:10:10 - INFO - Step 5: Updating games database with new games...
+2025-11-02 20:10:10 - INFO - Attempting to update game database with newly scraped games...
+2025-11-02 20:10:10 - INFO - Existing games in database: 242415
+2025-11-02 20:10:10 - INFO - New games scraped: 1181
+2025-11-02 20:11:27 - INFO - Found and skipped 609 duplicate game(s) already present in the database.
+2025-11-02 20:11:27 - INFO - Found 572 new unique games.
+2025-11-02 20:11:27 - INFO - Database size: 242415 -> 242987 (+572)
+2025-11-02 20:11:28 - INFO - Database saved successfully to basil_ladder_games.csv
+2025-11-02 20:11:28 - INFO - Step 6: Skipping replay download.
+2025-11-02 20:11:28 - INFO - ==============================
+2025-11-02 20:11:28 - INFO - Automated Scrape Task Finished
+2025-11-02 20:11:28 - INFO - Outcome: SUCCESS
+2025-11-02 20:11:28 - INFO - Total Duration: 147.80 seconds
+2025-11-02 20:11:28 - INFO - ==============================
