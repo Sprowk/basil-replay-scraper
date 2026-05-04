@@ -2,8 +2,8 @@ name: Daily BASIL Scrape and Commit
 
 on:
   # Schedule the workflow to run automatically
-  schedule:
-    - cron: '0 8,20 * * *' # Runs at 08:00 and 20:00 UTC daily
+  #schedule:
+  #  - cron: '0 8,20 * * *' # Runs at 08:00 and 20:00 UTC daily
 
   # Allow manual triggering from the Actions tab in GitHub
   workflow_dispatch:
